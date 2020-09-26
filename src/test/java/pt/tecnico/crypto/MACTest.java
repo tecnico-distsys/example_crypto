@@ -100,21 +100,21 @@ public class MACTest {
 
 	/** Makes a message authentication code. */
 	private static byte[] makeMAC(byte[] bytes, SecretKey key) throws Exception {
-		Mac cipher = Mac.getInstance(MAC_ALGO);
-		cipher.init(key);
-		byte[] cipherDigest = cipher.doFinal(bytes);
+		Mac mac = Mac.getInstance(MAC_ALGO);
+		mac.init(key);
+		byte[] macBytes = mac.doFinal(bytes);
 
-		return cipherDigest;
+		return macBytes;
 	}
 
 	/**
 	 * Calculates new digest from text and compare it to the to deciphered digest.
 	 */
-	private static boolean verifyMAC(byte[] cipherDigest, byte[] bytes, SecretKey key) throws Exception {
-		Mac cipher = Mac.getInstance(MAC_ALGO);
-		cipher.init(key);
-		byte[] cipheredBytes = cipher.doFinal(bytes);
-		return Arrays.equals(cipherDigest, cipheredBytes);
+	private static boolean verifyMAC(byte[] receivedMacBytes, byte[] bytes, SecretKey key) throws Exception {
+		Mac mac = Mac.getInstance(MAC_ALGO);
+		mac.init(key);
+		byte[] recomputedMacBytes = mac.doFinal(bytes);
+		return Arrays.equals(receivedMacBytes, recomputedMacBytes);
 	}
 
 	/**
