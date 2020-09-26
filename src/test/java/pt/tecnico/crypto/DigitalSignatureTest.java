@@ -107,14 +107,14 @@ public class DigitalSignatureTest {
 	/**
 	 * Calculates new digest from text and compares it to the to deciphered digest.
 	 */
-	private static boolean verifyDigitalSignature(byte[] cipherDigest, byte[] bytes, KeyPair keyPair) throws Exception {
+	private static boolean verifyDigitalSignature(byte[] receivedSignature, byte[] bytes, KeyPair keyPair) throws Exception {
 
 		// verify the signature with the public key
 		Signature sig = Signature.getInstance(SIGNATURE_ALGO);
 		sig.initVerify(keyPair.getPublic());
 		sig.update(bytes);
 		try {
-			return sig.verify(cipherDigest);
+			return sig.verify(receivedSignature);
 		} catch (SignatureException se) {
 			System.err.println("Caught exception while verifying " + se);
 			return false;
@@ -198,7 +198,7 @@ public class DigitalSignatureTest {
 	 * auxiliary method to calculate new digest from text and compare it to the to
 	 * deciphered digest
 	 */
-	private static boolean redigestDecipherCompare(byte[] cipherDigest, byte[] text, KeyPair keyPair) throws Exception {
+	private static boolean redigestDecipherCompare(byte[] receivedSignature, byte[] text, KeyPair keyPair) throws Exception {
 
 		// get a message digest object
 		MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGO);
@@ -214,7 +214,7 @@ public class DigitalSignatureTest {
 
 		// decipher the ciphered digest using the public key
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPublic());
-		byte[] decipheredDigest = cipher.doFinal(cipherDigest);
+		byte[] decipheredDigest = cipher.doFinal(receivedSignature);
 		System.out.println("Deciphered digest:");
 		System.out.println(printHexBinary(decipheredDigest));
 
